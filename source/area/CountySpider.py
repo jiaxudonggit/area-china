@@ -43,7 +43,7 @@ class CountySpider(object):
         if not city.get('url'):
             return counties
 
-        print(f"开始获取{city.get('province_name')}'-'{city.get('name')}下的三级区县信息...")
+        print(f"开始获取{city.get('province_name')}-{city.get('name')}下的三级区县信息...")
         headers = random.choice(self.headers)
         time.sleep(self.sleep)
         res = RequestUtil.get(url=city.get('url'), headers=headers, encoding=self.encoding)
