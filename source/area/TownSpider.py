@@ -6,7 +6,6 @@
 import random
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from copy import deepcopy
 
 from pyquery import PyQuery
 
@@ -87,10 +86,9 @@ class TownSpider(object):
         return towns
 
     def multi_thread(self):
-        self.counties_copy = deepcopy(self.counties)
-        with ThreadPoolExecutor(max_workers=6) as t:  # 创建一个最大容纳数量为6的线程池
+        with ThreadPoolExecutor(max_workers=self.thread_num) as t:  # 创建一个最大容纳数量为6的线程池
             all_task = []
-            for county in self.counties_copy:
+            for county in self.counties:
                 task = t.submit(self.start_requests, county)
                 all_task.append(task)
 

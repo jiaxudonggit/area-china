@@ -69,6 +69,6 @@ class Main(object):
 
 
 if __name__ == '__main__':
-    province_code = ['15']
-    main = Main(province_code=province_code)
+    province_code_list = ['15']
+    main = Main(province_code=province_code_list)
     main.run()

@@ -12,8 +12,7 @@ class WriteExcel(object):
 
     def __init__(self, file_path: str):
         """
-        :param file_name: 文件名
-        :param data: 要写入的数据
+        :param file_path: 文件名
         """
 
         # 表头
@@ -30,7 +29,7 @@ class WriteExcel(object):
         ]
         self.file_path = file_path
 
-        if (os.path.exists(self.file_path)):
+        if os.path.exists(self.file_path):
             self.workbook = openpyxl.load_workbook(self.file_path)
         else:
             self.workbook = openpyxl.Workbook()
