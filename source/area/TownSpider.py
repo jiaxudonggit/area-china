@@ -16,18 +16,20 @@ from source.area.util import RequestUtil
 
 class TownSpider(object):
 
-    def __init__(self, encoding: str, headers: list, counties: dict, is_multi_thread: bool = False):
+    def __init__(self, encoding: str, headers: list, counties: dict, is_multi_thread: bool = False, sleep:int=3):
         """
         :param encoding: 编码
         :param headers: 请求头列表
         :param cities: 三级市辖区、县（旗）、县级市、自治县（自治旗）、特区、林区字典
         :param is_multi_thread: 是否开启多线程
+        :param sleep: 请求间隔时间
         """
         self.encoding = encoding
         self.headers = headers
         self.counties = counties
         self.counties_copy = deepcopy(counties)
         self.is_multi_thread = is_multi_thread
+        self.sleep = sleep
 
     def start_requests(self, code, county):
         """
@@ -43,7 +45,7 @@ class TownSpider(object):
 
         print(f"开始获取{county.get('province_name')}-{county.get('city_name')}-{county.get('name')}下的四级乡镇信息")
         headers = random.choice(self.headers)
-        time.sleep(3)
+        time.sleep(self.sleep)
         res = RequestUtil.get(url=county.get('url'), timeout=5, headers=headers, encoding=self.encoding)
         if not res:
             print(county.get('name'), '请求失败...')

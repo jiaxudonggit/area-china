@@ -15,17 +15,19 @@ from source.area.util import RequestUtil
 
 class VillageSpider(object):
 
-    def __init__(self, encoding: str, headers: list, towns: dict):
+    def __init__(self, encoding: str, headers: list, towns: dict, sleep: int = 3):
         """
         :param encoding: 编码
         :param headers: 请求头列表
         :param cities: 四级镇、乡、民族乡、县辖区、街字典
         :param is_multi_thread: 是否开启多线程
+        :param sleep: 请求间隔时间
         """
         self.encoding = encoding
         self.headers = headers
         self.towns = towns
         self.towns_copy = deepcopy(towns)
+        self.sleep = sleep
 
     def start_requests(self, code, town):
         """
@@ -40,7 +42,7 @@ class VillageSpider(object):
 
         print(f"开始获取{town.get('province_name')}-{town.get('city_name')}-{town.get('county_name')}-{town.get('name')}下的五级村居委会信息")
         headers = random.choice(self.headers)
-        time.sleep(3)
+        time.sleep(self.sleep)
         res = RequestUtil.get(url=town.get('url'), timeout=3, headers=headers, encoding=self.encoding)
         if not res:
             print(town.get('name'), '请求失败...')
@@ -71,7 +73,6 @@ class VillageSpider(object):
         self.towns[code]['villages'] = villages
 
         return villages
-
 
     def multi_thread(self):
 

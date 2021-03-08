@@ -16,18 +16,20 @@ from source.area.util import RequestUtil
 
 class CitySpider(object):
 
-    def __init__(self, encoding: str, headers: list, provinces: dict, is_multi_thread: bool = False):
+    def __init__(self, encoding: str, headers: list, provinces: dict, is_multi_thread: bool = False, sleep: int = 3):
         """
         :param encoding: 编码
         :param headers: 请求头列表
         :param provinces: 一级：省、直辖市、自治区字典
         :param is_multi_thread: 是否开启多线程
+        :param sleep: 请求间隔时间
         """
         self.encoding = encoding
         self.headers = headers
         self.provinces = provinces
         self.provinces_copy = deepcopy(provinces)
         self.is_multi_thread = is_multi_thread
+        self.sleep = sleep
 
     def start_requests(self, code: str, province: dict) -> dict:
         """
@@ -44,7 +46,7 @@ class CitySpider(object):
 
         print(f"开始获取{province.get('name')}下的地级市信息...")
         headers = random.choice(self.headers)
-        time.sleep(3)
+        time.sleep(self.sleep)
         res = RequestUtil.get(url=province.get('url'), headers=headers, encoding=self.encoding)
         if not res:
             print(province.get('name'), '请求失败...')

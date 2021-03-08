@@ -51,7 +51,7 @@ class Main(object):
         self.encoding = encoding
 
     def run(self):
-        # 获取省、直辖市、自治区
+        # 获取5级政区域数据
         province_tool = ProvinceSpider(
             province_code=self.province_code, domain_url=self.domain_url,
             encoding=self.encoding, headers=self.headers, is_multi_thread=False
@@ -61,12 +61,11 @@ class Main(object):
 
         # 写入excel
         excel_tool = WriteExcel(file_name="行政村统计数据.xlsx", data=provinces)
-        excel_tool.write()
+        excel_tool.write_one_thread()
 
 
 if __name__ == '__main__':
-    province_code = '15'
 
+    province_code = ['15']
     main = Main(province_code='15')
-
     main.run()

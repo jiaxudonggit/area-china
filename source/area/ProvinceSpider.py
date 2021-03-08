@@ -15,13 +15,14 @@ from source.area.util import RequestUtil
 
 class ProvinceSpider(object):
 
-    def __init__(self, domain_url: str, encoding: str, headers: list, province_code: str = None, is_multi_thread: bool = False):
+    def __init__(self, domain_url: str, encoding: str, headers: list, province_code: list = None, is_multi_thread: bool = False, sleep:int=3):
         """
         :param domain_url: 爬取页面链接
         :param encoding: 编码
         :param headers: 请求头列表
         :param province_code: 统计代码
         :param is_multi_thread: 是否开启多线程
+        :param sleep: 请求间隔时间
         """
         self.domain_url = domain_url
         self.encoding = encoding
@@ -29,6 +30,7 @@ class ProvinceSpider(object):
         self.province_code = province_code
         self.provinces = {}
         self.is_multi_thread = is_multi_thread
+        self.sleep = sleep
 
     def start_requests(self) -> dict:
         """
@@ -40,7 +42,7 @@ class ProvinceSpider(object):
 
         print(f"开始获取一级省、直辖市、自治区信息...")
         headers = random.choice(self.headers)
-        time.sleep(3)
+        time.sleep(self.sleep)
         res = RequestUtil.get(url=self.domain_url, headers=headers, encoding=self.encoding)
         if not res:
             print('请求失败...')
@@ -59,7 +61,7 @@ class ProvinceSpider(object):
                 code = a_tag.attr('href').split('/')[-1].split('.')[0]
 
                 if self.province_code:
-                    if str(self.province_code) == str(code):
+                    if str(code) in [str(code) for code in self.province_code]:
                         provinces.setdefault(code, {
                             'code': code,  # 统计汇总识别码-划分代码
                             'name': a_tag.text(),  # 省份名称
