@@ -90,8 +90,8 @@ class CitySpider(object):
     def multi_thread(self):
         with ThreadPoolExecutor(max_workers=self.thread_num) as t:  # 创建一个最大容纳数量为n的线程池
             all_task = []
-            for i in range(len(self.provinces)):
-                task = t.submit(self.start_requests, self.provinces.pop(i))
+            for province in self.provinces:
+                task = t.submit(self.start_requests, province)
                 all_task.append(task)
 
             for future in as_completed(all_task):
@@ -99,7 +99,6 @@ class CitySpider(object):
 
     def one_thread(self):
 
-        for i in range(len(self.provinces)):
-            province = self.provinces.pop(i)
+        for province in self.provinces:
             result = self.start_requests(province)
             print(f"获取{province.get('name')}地级市结束: {result}")
