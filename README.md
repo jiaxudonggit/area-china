@@ -19,6 +19,6 @@
 * 运行：
   ```
   province_code = ['15',] # 可爬取指定的一级行政区数据, 为空时爬取全国一级行政区, 否则爬取指定代码的一级行政区
-  main = Main(province_code='15')
+  main = Main(province_code=province_code)
   main.run()
 ```
