@@ -16,7 +16,7 @@ from source.area.util import RequestUtil
 
 class CountySpider(object):
 
-    def __init__(self, encoding: str, headers: list, cities: dict, is_multi_thread: bool = False, sleep:int=3):
+    def __init__(self, encoding: str, headers: list, cities: dict, is_multi_thread: bool = False, sleep: int = 3):
         """
         :param encoding: 编码
         :param headers: 请求头列表

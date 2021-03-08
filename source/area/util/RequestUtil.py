@@ -75,4 +75,3 @@ def get_url(html, url, headers, timeout):
     url2 = urljoin(url, tail)
     print(url2)
     return url2
-

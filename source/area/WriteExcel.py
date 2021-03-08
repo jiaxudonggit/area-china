@@ -5,8 +5,9 @@
 """
 
 import os
+from concurrent.futures import ALL_COMPLETED, ThreadPoolExecutor, wait
+
 from openpyxl import Workbook
-from concurrent.futures import ThreadPoolExecutor,  wait, ALL_COMPLETED
 
 
 class WriteExcel(object):
