@@ -18,7 +18,7 @@ from source.area.util import RequestUtil
 class CitySpider(object):
 
     def __init__(self, encoding: str, headers: list, provinces: list, is_multi_thread: bool = False, excel_tool: WriteExcel = None,
-                 thread_num: int = 3, sleep: int = 3):
+                 thread_num: int = 3, sleep: int = 1):
         """
         :param encoding: 编码
         :param headers: 请求头列表

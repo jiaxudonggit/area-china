@@ -17,7 +17,7 @@ from source.area.util import RequestUtil
 
 class VillageSpider(object):
 
-    def __init__(self, encoding: str, headers: list, towns: list, thread_num: int = 3, sleep: int = 3, excel_tool: WriteExcel = None):
+    def __init__(self, encoding: str, headers: list, towns: list, thread_num: int = 3, sleep: int = 1, excel_tool: WriteExcel = None):
         """
         :param encoding: 编码
         :param headers: 请求头列表
