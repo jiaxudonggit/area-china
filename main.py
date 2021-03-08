@@ -53,18 +53,19 @@ class Main(object):
         self.encoding = encoding
 
     def run(self):
+        # 写入excel
+        file_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'result', '行政村统计数据.xlsx')
+        excel_tool = WriteExcel(file_path=file_path)
+
         # 获取5级政区域数据
         province_tool = ProvinceSpider(
-            province_code=self.province_code, domain_url=self.domain_url,
-            encoding=self.encoding, headers=self.headers, sleep=2
+            province_code=self.province_code, domain_url=self.domain_url, encoding=self.encoding, headers=self.headers,
+            sleep=1, excel_tool=excel_tool
         )
         provinces = province_tool.start_requests()
         print(f"获取省、直辖市、自治区:{provinces}")
 
-        # 写入excel
-        file_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'result', '行政村统计数据.xlsx')
-        excel_tool = WriteExcel(file_path=file_path, data=provinces)
-        excel_tool.write_multi_thread()
+        excel_tool.save()
 
 
 if __name__ == '__main__':
