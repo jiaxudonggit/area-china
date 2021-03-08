@@ -27,7 +27,6 @@ class VillageSpider(object):
         self.encoding = encoding
         self.headers = headers
         self.towns = towns
-        self.towns_copy = deepcopy(towns)
         self.thread_num = thread_num
         self.sleep = sleep
 
@@ -77,7 +76,7 @@ class VillageSpider(object):
         return villages
 
     def multi_thread(self):
-
+        self.towns_copy = deepcopy(self.towns)
         with ThreadPoolExecutor(max_workers=6) as t:  # 创建一个最大容纳数量为6的线程池
             all_task = []
             for code, town in self.towns_copy.items():
@@ -89,6 +88,6 @@ class VillageSpider(object):
 
     def one_thread(self):
 
-        for code, town in self.towns_copy.items():
+        for code, town in self.towns.items():
             result = self.start_requests(code, town)
             print(f"获取{town.get('name')}五级村居委会结束: {result}")

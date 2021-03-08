@@ -28,7 +28,6 @@ class CountySpider(object):
         self.encoding = encoding
         self.headers = headers
         self.cities = cities
-        self.cities_copy = deepcopy(cities)
         self.is_multi_thread = is_multi_thread
         self.thread_num = thread_num
         self.sleep = sleep
@@ -97,7 +96,7 @@ class CountySpider(object):
         return town_tool.counties
 
     def multi_thread(self):
-
+        self.cities_copy = deepcopy(self.cities)
         with ThreadPoolExecutor(max_workers=self.thread_num) as t:  # 创建一个最大容纳数量为n的线程池
             all_task = []
             for code, city in self.cities_copy.items():
@@ -109,6 +108,6 @@ class CountySpider(object):
 
     def one_thread(self):
 
-        for code, city in self.cities_copy.items():
+        for code, city in self.cities.items():
             result = self.start_requests(code, city)
             print(f"获取{city.get('name')}三级区县结束: {result}")
