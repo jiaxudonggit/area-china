@@ -11,13 +11,12 @@ from concurrent.futures import ThreadPoolExecutor,  wait, ALL_COMPLETED
 
 class WriteExcel(object):
 
-    def __init__(self, file_name: str, data: dict):
+    def __init__(self, file_path: str, data: dict):
         """
         :param file_name: 文件名
         :param data: 要写入的数据
         """
-        # 文件路径
-        self.ROOT = os.path.join(os.path.abspath(os.path.dirname(__file__)), '/result')
+
         # 表头
         self.HEADER = [
             "统计用区划代码",
@@ -30,9 +29,8 @@ class WriteExcel(object):
             "城乡分类代码",
             "名称",
         ]
-        self.file_name = file_name
+        self.file_path = file_path
         self.data = data
-        self.path = os.path.join(self.ROOT, self.file_name)
         self.work_book = Workbook()
 
     def write(self, item1):
@@ -156,11 +154,12 @@ class WriteExcel(object):
 
                             work_sheet_total.append(data5)
 
-        if not os.path.exists(self.path):
-            os.makedirs(self.ROOT)
+        # 判断文件目录是否存在， 不存在则创建
+        if not os.path.exists(os.path.dirname(self.file_path)):
+            os.makedirs(os.path.dirname(self.file_path))
 
         # 保存到本地
-        self.work_book.save(self.path)
+        self.work_book.save(self.file_path)
 
     def write_multi_thread(self):
         """
@@ -175,8 +174,9 @@ class WriteExcel(object):
 
             wait(all_task, return_when=ALL_COMPLETED)
 
-            if not os.path.exists(self.path):
-                os.makedirs(self.ROOT)
+            # 判断文件目录是否存在， 不存在则创建
+            if not os.path.exists(os.path.dirname(self.file_path)):
+                os.makedirs(os.path.dirname(self.file_path))
 
             # 保存到本地
-            self.work_book.save(self.path)
+            self.work_book.save(self.file_path)

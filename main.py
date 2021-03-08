@@ -1,11 +1,13 @@
 # -*- coding: UTF-8 -*-
+import os
+
 from source.area.ProvinceSpider import ProvinceSpider
 from source.area.WriteExcel import WriteExcel
 
 
 class Main(object):
 
-    def __init__(self, province_code: str = None, year: str = '2020', encoding: str = 'gb2312'):
+    def __init__(self, province_code: list = None, year: str = '2020', encoding: str = 'gb2312'):
         """
         :param province_code: 统计汇总识别码-划分代码 为空时爬取全国一级：省、直辖市、自治区
         :param year: 更改年份只需要更改这里即可
@@ -54,18 +56,18 @@ class Main(object):
         # 获取5级政区域数据
         province_tool = ProvinceSpider(
             province_code=self.province_code, domain_url=self.domain_url,
-            encoding=self.encoding, headers=self.headers, is_multi_thread=False
+            encoding=self.encoding, headers=self.headers, is_multi_thread=False, sleep=2
         )
         provinces = province_tool.start_requests()
         print(f"获取省、直辖市、自治区:{provinces}")
 
         # 写入excel
-        excel_tool = WriteExcel(file_name="行政村统计数据.xlsx", data=provinces)
-        excel_tool.write_one_thread()
+        file_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'result', '行政村统计数据.xlsx')
+        excel_tool = WriteExcel(file_path=file_path, data=provinces)
+        excel_tool.write_multi_thread()
 
 
 if __name__ == '__main__':
-
     province_code = ['15']
-    main = Main(province_code='15')
+    main = Main(province_code=province_code)
     main.run()
