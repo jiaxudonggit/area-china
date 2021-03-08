@@ -45,8 +45,6 @@ class CitySpider(object):
 
         cities = []
 
-        print(province)
-
         if not province.get('url'):
             return None
 
