@@ -134,8 +134,8 @@ class WriteExcel(object):
                         data4.append(item2.get("code"))
                         data4.append(item3.get("code"))
                         data4.append(item3.get("name"))
-                        data4.append(item3.get("code"))
-                        data4.append(item3.get("name"))
+                        data4.append(item4.get("code"))
+                        data4.append(item4.get("name"))
                         if not item4.get("child"):
                             # 插入数据
                             work_sheet_total.append(data4)
@@ -147,11 +147,11 @@ class WriteExcel(object):
                             data5.append(item2.get("code"))
                             data5.append(item3.get("code"))
                             data5.append(item3.get("name"))
-                            data5.append(item3.get("code"))
-                            data5.append(item3.get("name"))
-                            data5.append(item3.get("code"))
-                            data5.append(item3.get("code_type"))
-                            data5.append(item3.get("name"))
+                            data5.append(item4.get("code"))
+                            data5.append(item4.get("name"))
+                            data5.append(item5.get("code"))
+                            data5.append(item5.get("code_type"))
+                            data5.append(item5.get("name"))
 
                             work_sheet_total.append(data5)
 
