@@ -88,8 +88,8 @@ class TownSpider(object):
     def multi_thread(self):
         with ThreadPoolExecutor(max_workers=self.thread_num) as t:  # 创建一个最大容纳数量为6的线程池
             all_task = []
-            for county in self.counties:
-                task = t.submit(self.start_requests, county)
+            for i in range(len(self.counties)):
+                task = t.submit(self.start_requests, self.counties.pop(i))
                 all_task.append(task)
 
             for future in as_completed(all_task):
@@ -97,6 +97,7 @@ class TownSpider(object):
 
     def one_thread(self):
 
-        for county in self.counties:
+        for i in range(len(self.counties)):
+            county = self.counties.pop(i)
             result = self.start_requests(county)
             print(f"获取{county.get('name')}四级乡镇结束: {result}")

@@ -76,8 +76,8 @@ class VillageSpider(object):
     def multi_thread(self):
         with ThreadPoolExecutor(max_workers=self.thread_num) as t:  # 创建一个最大容纳数量为6的线程池
             all_task = []
-            for town in self.towns:
-                task = t.submit(self.start_requests, town)
+            for i in range(len(self.towns)):
+                task = t.submit(self.start_requests, self.towns.pop(i))
                 all_task.append(task)
 
             for future in as_completed(all_task):
@@ -85,6 +85,7 @@ class VillageSpider(object):
 
     def one_thread(self):
 
-        for town in self.towns:
+        for i in range(len(self.towns)):
+            town = self.towns.pop(i)
             result = self.start_requests(town)
             print(f"获取{town.get('name')}五级村居委会结束: {result}")
