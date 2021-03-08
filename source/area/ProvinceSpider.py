@@ -15,13 +15,15 @@ from source.area.util import RequestUtil
 
 class ProvinceSpider(object):
 
-    def __init__(self, domain_url: str, encoding: str, headers: list, province_code: list = None, is_multi_thread: bool = False, sleep: int = 3):
+    def __init__(self, domain_url: str, encoding: str, headers: list, province_code: list = None,
+                 is_multi_thread: bool = False, thread_num: int = 6, sleep: int = 3):
         """
         :param domain_url: 爬取页面链接
         :param encoding: 编码
         :param headers: 请求头列表
         :param province_code: 统计代码
         :param is_multi_thread: 是否开启多线程
+        :param thread_num: 多线程数
         :param sleep: 请求间隔时间
         """
         self.domain_url = domain_url
@@ -30,6 +32,7 @@ class ProvinceSpider(object):
         self.province_code = province_code
         self.provinces = {}
         self.is_multi_thread = is_multi_thread
+        self.thread_num = thread_num
         self.sleep = sleep
 
     def start_requests(self) -> dict:
@@ -80,7 +83,8 @@ class ProvinceSpider(object):
                     })
 
         # 获取三级区县
-        city_tool = CitySpider(encoding=self.encoding, headers=self.headers, provinces=provinces, is_multi_thread=self.is_multi_thread)
+        city_tool = CitySpider(encoding=self.encoding, headers=self.headers, provinces=provinces,
+                               is_multi_thread=self.is_multi_thread, thread_num=self.thread_num, sleep=self.sleep)
         city_tool.multi_thread()
         print(f"获取地级市:{city_tool.provinces}")
         self.provinces = city_tool.provinces

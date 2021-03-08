@@ -15,18 +15,20 @@ from source.area.util import RequestUtil
 
 class VillageSpider(object):
 
-    def __init__(self, encoding: str, headers: list, towns: dict, sleep: int = 3):
+    def __init__(self, encoding: str, headers: list, towns: dict, thread_num: int = 6, sleep: int = 3):
         """
         :param encoding: 编码
         :param headers: 请求头列表
         :param cities: 四级镇、乡、民族乡、县辖区、街字典
         :param is_multi_thread: 是否开启多线程
+        :param thread_num: 多线程数
         :param sleep: 请求间隔时间
         """
         self.encoding = encoding
         self.headers = headers
         self.towns = towns
         self.towns_copy = deepcopy(towns)
+        self.thread_num = thread_num
         self.sleep = sleep
 
     def start_requests(self, code, town):

@@ -16,12 +16,13 @@ from source.area.util import RequestUtil
 
 class CitySpider(object):
 
-    def __init__(self, encoding: str, headers: list, provinces: dict, is_multi_thread: bool = False, sleep: int = 3):
+    def __init__(self, encoding: str, headers: list, provinces: dict, is_multi_thread: bool = False, thread_num: int = 6, sleep: int = 3):
         """
         :param encoding: 编码
         :param headers: 请求头列表
         :param provinces: 一级：省、直辖市、自治区字典
         :param is_multi_thread: 是否开启多线程
+        :param thread_num: 多线程数
         :param sleep: 请求间隔时间
         """
         self.encoding = encoding
@@ -29,6 +30,7 @@ class CitySpider(object):
         self.provinces = provinces
         self.provinces_copy = deepcopy(provinces)
         self.is_multi_thread = is_multi_thread
+        self.thread_num = thread_num
         self.sleep = sleep
 
     def start_requests(self, code: str, province: dict) -> dict:
@@ -74,7 +76,8 @@ class CitySpider(object):
         self.provinces[code]['searched'] = True
 
         # 获取三级区县
-        county_tool = CountySpider(encoding=self.encoding, headers=self.headers, cities=cities, is_multi_thread=self.is_multi_thread)
+        county_tool = CountySpider(encoding=self.encoding, headers=self.headers, cities=cities,
+                                   is_multi_thread=self.is_multi_thread, thread_num=self.thread_num, sleep=self.sleep)
         if self.is_multi_thread:
             county_tool.multi_thread()
         else:
@@ -85,7 +88,7 @@ class CitySpider(object):
 
     def multi_thread(self):
 
-        with ThreadPoolExecutor(max_workers=16) as t:  # 创建一个最大容纳数量为6的线程池
+        with ThreadPoolExecutor(max_workers=self.thread_num) as t:  # 创建一个最大容纳数量为n的线程池
             all_task = []
             for code, province in self.provinces_copy.items():
                 task = t.submit(self.start_requests, code, province)

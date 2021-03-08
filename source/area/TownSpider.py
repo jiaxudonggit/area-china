@@ -16,12 +16,13 @@ from source.area.util import RequestUtil
 
 class TownSpider(object):
 
-    def __init__(self, encoding: str, headers: list, counties: dict, is_multi_thread: bool = False, sleep: int = 3):
+    def __init__(self, encoding: str, headers: list, counties: dict, is_multi_thread: bool = False, thread_num: int = 6, sleep: int = 3):
         """
         :param encoding: 编码
         :param headers: 请求头列表
         :param cities: 三级市辖区、县（旗）、县级市、自治县（自治旗）、特区、林区字典
         :param is_multi_thread: 是否开启多线程
+        :param thread_num: 多线程数
         :param sleep: 请求间隔时间
         """
         self.encoding = encoding
@@ -29,6 +30,7 @@ class TownSpider(object):
         self.counties = counties
         self.counties_copy = deepcopy(counties)
         self.is_multi_thread = is_multi_thread
+        self.thread_num = thread_num
         self.sleep = sleep
 
     def start_requests(self, code, county):
@@ -76,7 +78,7 @@ class TownSpider(object):
         self.counties[code]['searched'] = True
 
         # 获取五级村居委会
-        town_tool = VillageSpider(encoding=self.encoding, headers=self.headers, towns=towns)
+        town_tool = VillageSpider(encoding=self.encoding, headers=self.headers, towns=towns, thread_num=self.thread_num, sleep=self.sleep)
         if self.is_multi_thread:
             town_tool.multi_thread()
         else:
