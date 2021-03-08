@@ -16,7 +16,7 @@ from source.area.util import RequestUtil
 
 class TownSpider(object):
 
-    def __init__(self, encoding: str, headers: list, counties: dict, is_multi_thread: bool = False, thread_num: int = 6, sleep: int = 3):
+    def __init__(self, encoding: str, headers: list, counties: dict, is_multi_thread: bool = False, thread_num: int = 3, sleep: int = 3):
         """
         :param encoding: 编码
         :param headers: 请求头列表

@@ -16,7 +16,7 @@ from source.area.util import RequestUtil
 class ProvinceSpider(object):
 
     def __init__(self, domain_url: str, encoding: str, headers: list, province_code: list = None,
-                 is_multi_thread: bool = False, thread_num: int = 6, sleep: int = 3):
+                 is_multi_thread: bool = False, thread_num: int = 3, sleep: int = 3):
         """
         :param domain_url: 爬取页面链接
         :param encoding: 编码
