@@ -42,7 +42,7 @@ def get(url, timeout=None, headers=None, encoding=None):
         response.close()
         return r_text
     except Exception as e:
-        print(f"爬取失败：反爬机制 {e}")
+        print(f"爬取失败：触发反爬机制 {e}")
         return None
 
 
