@@ -7,11 +7,12 @@ from source.area.WriteExcel import WriteExcel
 
 class Main(object):
 
-    def __init__(self, province_code: list = None, year: str = '2020', encoding: str = 'gb2312'):
+    def __init__(self, province_code: list = None, year: str = '2020', encoding: str = 'gb2312', file_name: str = ""):
         """
         :param province_code: 统计汇总识别码-划分代码 为空时爬取全国一级：省、直辖市、自治区
         :param year: 更改年份只需要更改这里即可
         :param encoding: 编码
+        :param file_name: excel文件名
         """
 
         self.headers = [
@@ -51,10 +52,11 @@ class Main(object):
         self.province_code = province_code
         self.year = year
         self.encoding = encoding
+        self.file_name = file_name
 
     def run(self):
         # 写入excel
-        file_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'result', '行政村统计数据.xlsx')
+        file_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'result', self.file_name)
         excel_tool = WriteExcel(file_path=file_path)
 
         # 获取5级政区域数据
@@ -69,6 +71,7 @@ class Main(object):
 
 
 if __name__ == '__main__':
-    province_code_list = ['15']
-    main = Main(province_code=province_code_list)
+    file_name = "行政村统计数据.xlsx"
+    province_code_list = ["15"]
+    main = Main(province_code=province_code_list, file_name=file_name, year="2020")
     main.run()

@@ -18,7 +18,8 @@
 * 推荐使用单线程爬取，虽然速度慢，但是不容易被反爬
 * 运行：
   ```
-  province_code = ['15',] # 可爬取指定的一级行政区数据, 为空时爬取全国一级行政区, 否则爬取指定代码的一级行政区
-  main = Main(province_code=province_code)
-  main.run()
+    province_code = ['15',] # 可爬取指定的一级行政区数据, 为空时爬取全国一级行政区, 否则爬取指定代码的一级行政区
+    file_name = "行政村统计数据.xlsx"
+    main = Main(province_code=province_code_list, file_name=file_name, year="2020")
+    main.run()
 ```
