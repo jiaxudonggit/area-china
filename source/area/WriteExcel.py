@@ -57,5 +57,3 @@ class WriteExcel(object):
         # 保存到本地
         self.workbook.save(self.file_path)
 
-    def __del__(self):
-        self.save()
