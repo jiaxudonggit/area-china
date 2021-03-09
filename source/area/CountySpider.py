@@ -42,53 +42,59 @@ class CountySpider(object):
         :param city:
         :return:
         """
-        counties = []
 
-        if not city.get('url'):
-            # 没有下一步链接就写入excel
-            self.excel_tool.append_data(sheet_name=city.get("province_name"), value=city.get("value", []))
+        try:
+
+            counties = []
+
+            if not city.get('url'):
+                # 没有下一步链接就写入excel
+                self.excel_tool.append_data(sheet_name=city.get("province_name"), value=city.get("value", []))
+                return None
+
+            print(f"开始获取{city.get('province_name')}-{city.get('name')}下的三级区县信息...")
+            headers = random.choice(self.headers)
+            time.sleep(self.sleep)
+            res = RequestUtil.get(url=city.get('url'), headers=headers, encoding=self.encoding)
+            if not res:
+                print(f'{city.get("name")}三级区县信息获取错误, 请求失败...')
+                return None
+
+            doc = PyQuery(res, url=city.get('url'), encoding=self.encoding)
+            if not doc:
+                print(f'{city.get("name")}三级区县信息获取错误,检查页面变化...')
+                return None
+
+            # 当前二级下的所有三级区县信息
+            for tr in doc('.countytr').items():
+                tr.make_links_absolute()
+                data = tr('a').text().split()
+                if not tr('a') or not data:
+                    # 当非直辖市的区县有一个市辖区无下级链接
+                    data = tr('td').text().split()
+                item = {
+                    'code': data[0],  # 统计汇总识别码-划分代码
+                    'name': data[1],  # 区县名称
+                    'province_name': city.get('province_name'),  # 省名称
+                    'city_name': city.get('name'),  # 省名称
+                    'value': city.get('value', []) + [data[0], data[1]]
+                }
+                if not tr('a') or not data:
+                    item.setdefault('url', None)
+                else:
+                    item.setdefault('url', tr('a').attr('href'))  # 下级链接地址
+                counties.append(item)
+
+            # 获取四级乡镇
+            town_tool = TownSpider(encoding=self.encoding, headers=self.headers, counties=counties, excel_tool=self.excel_tool,
+                                   is_multi_thread=self.is_multi_thread, thread_num=self.thread_num, sleep=self.sleep)
+
+            town_tool.one_thread()
+
+            return counties
+        except Exception as e:
+            print(f'{city.get("name")}三级区县信息获取错误 {e}')
             return None
-
-        print(f"开始获取{city.get('province_name')}-{city.get('name')}下的三级区县信息...")
-        headers = random.choice(self.headers)
-        time.sleep(self.sleep)
-        res = RequestUtil.get(url=city.get('url'), headers=headers, encoding=self.encoding)
-        if not res:
-            print(f'{city.get("name")}三级区县信息获取错误, 请求失败...')
-            return None
-
-        doc = PyQuery(res, url=city.get('url'), encoding=self.encoding)
-        if not doc:
-            print('三级区县信息获取错误,检查页面变化...')
-            return None
-
-        # 当前二级下的所有三级区县信息
-        for tr in doc('.countytr').items():
-            tr.make_links_absolute()
-            data = tr('a').text().split()
-            if not tr('a') or not data:
-                # 当非直辖市的区县有一个市辖区无下级链接
-                data = tr('td').text().split()
-            item = {
-                'code': data[0],  # 统计汇总识别码-划分代码
-                'name': data[1],  # 区县名称
-                'province_name': city.get('province_name'),  # 省名称
-                'city_name': city.get('name'),  # 省名称
-                'value': city.get('value', []) + [data[0], data[1]]
-            }
-            if not tr('a') or not data:
-                item.setdefault('url', None)
-            else:
-                item.setdefault('url', tr('a').attr('href'))  # 下级链接地址
-            counties.append(item)
-
-        # 获取四级乡镇
-        town_tool = TownSpider(encoding=self.encoding, headers=self.headers, counties=counties, excel_tool=self.excel_tool,
-                               is_multi_thread=self.is_multi_thread, thread_num=self.thread_num, sleep=self.sleep)
-
-        town_tool.one_thread()
-
-        return counties
 
     def multi_thread(self):
         with ThreadPoolExecutor(max_workers=self.thread_num) as t:  # 创建一个最大容纳数量为n的线程池

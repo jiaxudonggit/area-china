@@ -43,52 +43,58 @@ class CitySpider(object):
         :return:
         """
 
-        cities = []
+        try:
 
-        if not province.get('url'):
+            cities = []
+
+            if not province.get('url'):
+                return None
+
+            print(f"开始获取{province.get('name')}下的地级市信息...")
+            headers = random.choice(self.headers)
+            time.sleep(self.sleep)
+            res = RequestUtil.get(url=province.get('url'), headers=headers, encoding=self.encoding)
+            if not res:
+                print(f'{province.get("name")}二级地级市信息获取错误, 请求失败...')
+                return None
+
+            doc = PyQuery(res, url=province.get('url'), encoding=self.encoding)
+            if not doc:
+                print(f'{province.get("name")}二级地级市信息获取错误,检查页面变化...')
+                return None
+
+            # 当前一级下的所有二级地级市信息
+            for tr in doc('.citytr').items():
+                tr.make_links_absolute()
+                data = tr('a').text().split()
+                cities.append({
+                    'code': data[0],  # 统计汇总识别码-划分代码
+                    'name': data[1],  # 城市名称
+                    'province_name': province.get('name'),  # 省名称
+                    'url': tr('a').attr('href'),  # 下级链接地址
+                    'value': [data[0], data[1]]
+                })
+
+            # 创建sheet
+            work_sheet_detail = self.excel_tool.workbook.active
+            if "Sheet" not in work_sheet_detail.title:
+                self.excel_tool.create_sheet(province.get("name", ""))
+            else:
+                work_sheet_detail.title = province.get("name", "")
+                # 插入表头
+                work_sheet_detail.append(self.excel_tool.HEADER)
+
+            # 获取三级区县
+            county_tool = CountySpider(encoding=self.encoding, headers=self.headers, cities=cities, excel_tool=self.excel_tool,
+                                       is_multi_thread=self.is_multi_thread, thread_num=self.thread_num, sleep=self.sleep)
+
+            county_tool.one_thread()
+
+            return cities
+
+        except Exception as e:
+            print(f'{province.get("name")}二级地级市信息获取错误 {e}')
             return None
-
-        print(f"开始获取{province.get('name')}下的地级市信息...")
-        headers = random.choice(self.headers)
-        time.sleep(self.sleep)
-        res = RequestUtil.get(url=province.get('url'), headers=headers, encoding=self.encoding)
-        if not res:
-            print(f'{province.get("name")}二级地级市信息获取错误, 请求失败...')
-            return None
-
-        doc = PyQuery(res, url=province.get('url'), encoding=self.encoding)
-        if not doc:
-            print('二级地级市信息获取错误,检查页面变化...')
-            return None
-
-        # 当前一级下的所有二级地级市信息
-        for tr in doc('.citytr').items():
-            tr.make_links_absolute()
-            data = tr('a').text().split()
-            cities.append({
-                'code': data[0],  # 统计汇总识别码-划分代码
-                'name': data[1],  # 城市名称
-                'province_name': province.get('name'),  # 省名称
-                'url': tr('a').attr('href'),  # 下级链接地址
-                'value': [data[0], data[1]]
-            })
-
-        # 创建sheet
-        work_sheet_detail = self.excel_tool.workbook.active
-        if "Sheet" not in work_sheet_detail.title:
-            self.excel_tool.create_sheet(province.get("name", ""))
-        else:
-            work_sheet_detail.title = province.get("name", "")
-            # 插入表头
-            work_sheet_detail.append(self.excel_tool.HEADER)
-
-        # 获取三级区县
-        county_tool = CountySpider(encoding=self.encoding, headers=self.headers, cities=cities, excel_tool=self.excel_tool,
-                                   is_multi_thread=self.is_multi_thread, thread_num=self.thread_num, sleep=self.sleep)
-
-        county_tool.one_thread()
-
-        return cities
 
     def multi_thread(self):
         with ThreadPoolExecutor(max_workers=self.thread_num) as t:  # 创建一个最大容纳数量为n的线程池

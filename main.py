@@ -91,7 +91,7 @@ if __name__ == '__main__':
     sleep: 睡眠间隔时间，越大越不容易被反爬 单线程是推荐0.5-1之间
     file_name: excel文件名，默认存储在项目根目录下的result文件夹内，使用时间做区分
     """
-    file_name = "行政村统计数据.xlsx"
-    province_code_list = ["15", ]
-    main = Main(province_code_list=province_code_list, file_name=file_name, year="2020", sleep=0.5)
+    file_name = "行政统计数据.xlsx"
+    province_code_list = []
+    main = Main(province_code_list=province_code_list, file_name=file_name, year="2020", sleep=3, is_multi_thread=True, thread_num=8)
     main.run()

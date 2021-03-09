@@ -44,53 +44,59 @@ class ProvinceSpider(object):
         :return:
         """
 
-        provinces = []
+        try:
 
-        print(f"开始获取一级省、直辖市、自治区信息...")
-        headers = random.choice(self.headers)
-        time.sleep(self.sleep)
-        res = RequestUtil.get(url=self.domain_url, headers=headers, encoding=self.encoding)
-        if not res:
-            print('首页省份信息获取错误,请求失败...')
-            return None
+            provinces = []
 
-        doc = PyQuery(res, url=self.domain_url, encoding=self.encoding).find('.provincetr')
-        if not doc:
-            print('首页省份信息获取错误,检查页面变化...')
-            return None
+            print(f"开始获取一级省、直辖市、自治区信息...")
+            headers = random.choice(self.headers)
+            time.sleep(self.sleep)
+            res = RequestUtil.get(url=self.domain_url, headers=headers, encoding=self.encoding)
+            if not res:
+                print('首页省份信息获取错误,请求失败...')
+                return None
 
-        for td in doc('td').items():
-            a_tag = td('a')
-            if a_tag:
-                # 生成URL绝对路径
-                a_tag.make_links_absolute()
-                code = a_tag.attr('href').split('/')[-1].split('.')[0]
+            doc = PyQuery(res, url=self.domain_url, encoding=self.encoding).find('.provincetr')
+            if not doc:
+                print('首页省份信息获取错误,检查页面变化...')
+                return None
 
-                if self.province_code_list:
-                    if str(code) in [str(code) for code in self.province_code_list]:
+            for td in doc('td').items():
+                a_tag = td('a')
+                if a_tag:
+                    # 生成URL绝对路径
+                    a_tag.make_links_absolute()
+                    code = a_tag.attr('href').split('/')[-1].split('.')[0]
+
+                    if self.province_code_list:
+                        if str(code) in [str(code) for code in self.province_code_list]:
+                            provinces.append({
+                                'code': code,  # 统计汇总识别码-划分代码
+                                'name': a_tag.text(),  # 省份名称
+                                'url': a_tag.attr('href'),  # 下级链接地址
+                                'value': [code, a_tag.text()]
+                            })
+                        else:
+                            continue
+                    else:
                         provinces.append({
                             'code': code,  # 统计汇总识别码-划分代码
                             'name': a_tag.text(),  # 省份名称
                             'url': a_tag.attr('href'),  # 下级链接地址
                             'value': [code, a_tag.text()]
                         })
-                    else:
-                        continue
-                else:
-                    provinces.append({
-                        'code': code,  # 统计汇总识别码-划分代码
-                        'name': a_tag.text(),  # 省份名称
-                        'url': a_tag.attr('href'),  # 下级链接地址
-                        'value': [code, a_tag.text()]
-                    })
 
-        # 获取二级地级市
-        city_tool = CitySpider(encoding=self.encoding, headers=self.headers, provinces=provinces, excel_tool=self.excel_tool,
-                               is_multi_thread=self.is_multi_thread, thread_num=self.thread_num, sleep=self.sleep)
+            # 获取二级地级市
+            city_tool = CitySpider(encoding=self.encoding, headers=self.headers, provinces=provinces, excel_tool=self.excel_tool,
+                                   is_multi_thread=self.is_multi_thread, thread_num=self.thread_num, sleep=self.sleep)
 
-        if self.is_multi_thread:
-            city_tool.multi_thread()
-        else:
-            city_tool.one_thread()
+            if self.is_multi_thread:
+                city_tool.multi_thread()
+            else:
+                city_tool.one_thread()
 
-        return provinces
+            return provinces
+
+        except Exception as e:
+            print(f'首页省份信息获取错误 {e}')
+            return None
