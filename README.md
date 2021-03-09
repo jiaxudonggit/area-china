@@ -12,6 +12,7 @@
 # 运行程序
 
 * 依赖Python3环境
+* 项目根目录执行`pip install -r requirements.txt`
 * 环境安装好后，建议直接导入项目到PyCharm中运行
 * 推荐使用单线程爬取，虽然速度慢，但是不容易被反爬
 * 运行项目根目录下main.py文件
