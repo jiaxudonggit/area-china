@@ -17,7 +17,7 @@ from source.area.util import RequestUtil
 class TownSpider(object):
 
     def __init__(self, encoding: str, headers: list, counties: list, is_multi_thread: bool = False,
-                 excel_tool: WriteExcel = None, thread_num: int = 3, sleep: int = 1):
+                 excel_tool: WriteExcel = None, thread_num: int = 3, sleep: float = 1):
         """
         :param encoding: 编码
         :param headers: 请求头列表
@@ -53,7 +53,7 @@ class TownSpider(object):
         time.sleep(self.sleep)
         res = RequestUtil.get(url=county.get('url'), timeout=5, headers=headers, encoding=self.encoding)
         if not res:
-            print(county.get('name'), '请求失败...')
+            print(f'{county.get("name")}四级乡镇信息获取错误, 请求失败...')
             return None
 
         doc = PyQuery(res, url=county.get('url'), encoding=self.encoding)
@@ -81,7 +81,6 @@ class TownSpider(object):
             town_tool.multi_thread()
         else:
             town_tool.one_thread()
-        print(f"获五级村居委会:{towns}")
 
         return towns
 
@@ -89,9 +88,9 @@ class TownSpider(object):
         with ThreadPoolExecutor(max_workers=self.thread_num) as t:  # 创建一个最大容纳数量为6的线程池
             for result in t.map(self.start_requests, self.counties):
                 town = result[0]
-                print(f"获取{town.get('province_name')}-{town.get('city_name')}-{town.get('county_name')}三级区县线程结束: {len(result)}")
+                print(f"获取{town.get('province_name')}-{town.get('city_name')}-{town.get('county_name')}三级区县线程结束: length={len(result)}")
 
     def one_thread(self):
         for county in self.counties:
             result = self.start_requests(county)
-            print(f"获取{county.get('province_name')}-{county.get('city_name')}-{county.get('name')}三级区县线程结束: {len(result)}")
+            print(f"获取{county.get('province_name')}-{county.get('city_name')}-{county.get('name')}三级区县线程结束: length={len(result)}")

@@ -11,8 +11,10 @@ import execjs
 import requests
 from requests.exceptions import InvalidURL
 
+GET_COUNT = 20
 
-def get(url, timeout=None, headers=None, encoding=None):
+
+def get(url, timeout=None, headers=None, encoding=None, count=20):
     """
     发送GET请求
     :param url: URL
@@ -22,6 +24,10 @@ def get(url, timeout=None, headers=None, encoding=None):
     :return:
     """
     try:
+
+        if count <= 0:
+            return None
+
         # 参数验证,URL不能为空
         if not url:
             raise InvalidURL("Invalid URL %r" % url)
@@ -34,16 +40,17 @@ def get(url, timeout=None, headers=None, encoding=None):
         if encoding:
             response.encoding = encoding
         res_content = response.text
-        new_url = get_url(res_content, url, headers, timeout)
+        new_url = get_url(res_content, url)
         if new_url:
+            print(f"触发反爬机制: {new_url}")
             time.sleep(3)
-            return get(url=url, headers=headers, timeout=timeout, encoding=encoding)
+            return get(url=url, headers=headers, timeout=timeout, encoding=encoding, count=count - 1)
         r_text = response.text
         response.close()
         return r_text
     except Exception as e:
         print(f"爬取失败：触发反爬机制 {e}")
-        return None
+        return get(url=url, headers=headers, timeout=timeout, encoding=encoding, count=count - 1)
 
 
 def prepare_url(url):
@@ -63,7 +70,7 @@ def prepare_url(url):
     return res
 
 
-def get_url(html, url, headers, timeout):
+def get_url(html, url):
     js = re.findall(r'<script type="text/javascript">([\w\W]*)</script>', html)
     if not js:
         return None
@@ -73,5 +80,4 @@ def get_url(html, url, headers, timeout):
     ctx = execjs.compile(js2)
     tail = ctx.call('getURL')
     url2 = urljoin(url, tail)
-    print(url2)
     return url2

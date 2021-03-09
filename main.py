@@ -1,4 +1,5 @@
 # -*- coding: UTF-8 -*-
+import atexit
 import os
 
 from source.area.ProvinceSpider import ProvinceSpider
@@ -54,20 +55,23 @@ class Main(object):
         self.encoding = encoding
         self.file_name = file_name
 
-    def run(self):
         # 写入excel
         file_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'result', self.file_name)
-        excel_tool = WriteExcel(file_path=file_path)
+        self.excel_tool = WriteExcel(file_path=file_path)
 
+        # 注册退出事件
+        atexit.register(self.save)
+
+    def run(self):
         # 获取5级政区域数据
         province_tool = ProvinceSpider(
             province_code=self.province_code, domain_url=self.domain_url, encoding=self.encoding, headers=self.headers,
-            sleep=1, excel_tool=excel_tool, is_multi_thread=False
+            sleep=0.5, excel_tool=self.excel_tool, is_multi_thread=False
         )
-        provinces = province_tool.start_requests()
-        print(f"获取省、直辖市、自治区:{provinces}")
+        province_tool.start_requests()
 
-        excel_tool.save()
+    def save(self):
+        self.excel_tool.save()
 
 
 if __name__ == '__main__':

@@ -56,4 +56,3 @@ class WriteExcel(object):
 
         # 保存到本地
         self.workbook.save(self.file_path)
-

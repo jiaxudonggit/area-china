@@ -18,7 +18,7 @@ from source.area.util import RequestUtil
 class ProvinceSpider(object):
 
     def __init__(self, domain_url: str, encoding: str, headers: list, province_code: list = None, excel_tool: WriteExcel = None,
-                 is_multi_thread: bool = False, thread_num: int = 3, sleep: int = 1):
+                 is_multi_thread: bool = False, thread_num: int = 3, sleep: float = 1):
         """
         :param domain_url: 爬取页面链接
         :param encoding: 编码
@@ -51,7 +51,7 @@ class ProvinceSpider(object):
         time.sleep(self.sleep)
         res = RequestUtil.get(url=self.domain_url, headers=headers, encoding=self.encoding)
         if not res:
-            print('请求失败...')
+            print('首页省份信息获取错误,请求失败...')
             return None
 
         doc = PyQuery(res, url=self.domain_url, encoding=self.encoding).find('.provincetr')
@@ -87,6 +87,5 @@ class ProvinceSpider(object):
         city_tool = CitySpider(encoding=self.encoding, headers=self.headers, provinces=provinces, excel_tool=self.excel_tool,
                                is_multi_thread=self.is_multi_thread, thread_num=self.thread_num, sleep=self.sleep)
         city_tool.multi_thread()
-        print(f"获取地级市:{len(provinces)}")
 
         return provinces
