@@ -74,7 +74,8 @@ class ProvinceSpider(object):
                             'url': a_tag.attr('href'),  # 下级链接地址
                             'value': [code, a_tag.text()]
                         })
-                        break
+                    else:
+                        continue
                 else:
                     provinces.append({
                         'code': code,  # 统计汇总识别码-划分代码

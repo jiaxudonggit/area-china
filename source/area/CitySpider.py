@@ -79,6 +79,8 @@ class CitySpider(object):
             self.excel_tool.create_sheet(province.get("name", ""))
         else:
             work_sheet_detail.title = province.get("name", "")
+            # 插入表头
+            work_sheet_detail.append(self.excel_tool.HEADER)
 
         # 获取三级区县
         county_tool = CountySpider(encoding=self.encoding, headers=self.headers, cities=cities, excel_tool=self.excel_tool,

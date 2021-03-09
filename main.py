@@ -1,5 +1,6 @@
 # -*- coding: UTF-8 -*-
 import atexit
+import datetime
 import os
 
 from source.area.ProvinceSpider import ProvinceSpider
@@ -53,7 +54,8 @@ class Main(object):
         self.province_code = province_code
         self.year = year
         self.encoding = encoding
-        self.file_name = file_name
+        stem, suffix = os.path.splitext(file_name)
+        self.file_name = f"{stem}_{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}{suffix}"
 
         # 写入excel
         file_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'result', self.file_name)
@@ -76,6 +78,6 @@ class Main(object):
 
 if __name__ == '__main__':
     file_name = "行政村统计数据.xlsx"
-    province_code_list = ["11", "15"]
+    province_code_list = ["15"]
     main = Main(province_code=province_code_list, file_name=file_name, year="2020")
     main.run()
