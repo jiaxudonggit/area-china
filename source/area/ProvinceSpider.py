@@ -83,10 +83,10 @@ class ProvinceSpider(object):
                         'value': [code, a_tag.text()]
                     })
 
-        # 获取三级区县
+        # 获取二级地级市
         city_tool = CitySpider(encoding=self.encoding, headers=self.headers, provinces=provinces, excel_tool=self.excel_tool,
                                is_multi_thread=self.is_multi_thread, thread_num=self.thread_num, sleep=self.sleep)
         city_tool.multi_thread()
-        print(f"获取地级市:{provinces}")
+        print(f"获取地级市:{len(provinces)}")
 
         return provinces

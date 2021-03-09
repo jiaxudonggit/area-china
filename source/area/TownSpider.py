@@ -5,7 +5,7 @@
 """
 import random
 import time
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import ThreadPoolExecutor
 
 from pyquery import PyQuery
 
@@ -87,16 +87,11 @@ class TownSpider(object):
 
     def multi_thread(self):
         with ThreadPoolExecutor(max_workers=self.thread_num) as t:  # 创建一个最大容纳数量为6的线程池
-            all_task = []
-            for county in self.counties:
-                task = t.submit(self.start_requests, county)
-                all_task.append(task)
-
-            for future in as_completed(all_task):
-                print(f"获取四级乡镇线程结束: {future.result()}")
+            for result in t.map(self.start_requests, self.counties):
+                town = result[0]
+                print(f"获取{town.get('province_name')}-{town.get('city_name')}-{town.get('county_name')}三级区县线程结束: {len(result)}")
 
     def one_thread(self):
-
         for county in self.counties:
             result = self.start_requests(county)
-            print(f"获取{county.get('name')}四级乡镇结束: {result}")
+            print(f"获取{county.get('province_name')}-{county.get('city_name')}-{county.get('name')}三级区县线程结束: {len(result)}")

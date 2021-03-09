@@ -5,7 +5,7 @@
 """
 import random
 import time
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import ThreadPoolExecutor
 from typing import Any
 
 from pyquery import PyQuery
@@ -70,11 +70,15 @@ class CitySpider(object):
                 'name': data[1],  # 城市名称
                 'province_name': province.get('name'),  # 省名称
                 'url': tr('a').attr('href'),  # 下级链接地址
-                'value': province.get('value', []) + [data[0], data[1]]
+                'value': [data[0], data[1]]
             })
 
         # 创建sheet
-        self.excel_tool.create_sheet(province.get("name"))
+        work_sheet_detail = self.excel_tool.workbook.active
+        if "Sheet" not in work_sheet_detail.title:
+            self.excel_tool.create_sheet(province.get("name", ""))
+        else:
+            work_sheet_detail.title = province.get("name", "")
 
         # 获取三级区县
         county_tool = CountySpider(encoding=self.encoding, headers=self.headers, cities=cities, excel_tool=self.excel_tool,
@@ -89,16 +93,10 @@ class CitySpider(object):
 
     def multi_thread(self):
         with ThreadPoolExecutor(max_workers=self.thread_num) as t:  # 创建一个最大容纳数量为n的线程池
-            all_task = []
-            for province in self.provinces:
-                task = t.submit(self.start_requests, province)
-                all_task.append(task)
-
-            for future in as_completed(all_task):
-                print(f"获取五级村居委会线程结束: {future.result()}")
+            for result in t.map(self.start_requests, self.provinces):
+                print(f"获取{result[0].get('province_name')}地级市线程结束: {len(result)}")
 
     def one_thread(self):
-
         for province in self.provinces:
             result = self.start_requests(province)
-            print(f"获取{province.get('name')}地级市结束: {result}")
+            print(f"获取{province.get('name')}地级市结束: {len(result)}")
