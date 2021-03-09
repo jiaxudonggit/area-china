@@ -85,20 +85,21 @@ class CountySpider(object):
         # 获取四级乡镇
         town_tool = TownSpider(encoding=self.encoding, headers=self.headers, counties=counties, excel_tool=self.excel_tool,
                                is_multi_thread=self.is_multi_thread, thread_num=self.thread_num, sleep=self.sleep)
-        if self.is_multi_thread:
-            town_tool.multi_thread()
-        else:
-            town_tool.one_thread()
+
+        town_tool.one_thread()
 
         return counties
 
     def multi_thread(self):
         with ThreadPoolExecutor(max_workers=self.thread_num) as t:  # 创建一个最大容纳数量为n的线程池
             for result in t.map(self.start_requests, self.cities):
-                county = result[0]
-                print(f"获取{county.get('province_name')}-{county.get('city_name')}三级区县线程结束: length={len(result)}")
+                if result:
+                    county = result[0]
+                    print(f"获取 {county.get('province_name')}-{county.get('city_name')} 三级区县线程结束")
+                else:
+                    print(f"获取三级区县线程结束")
 
     def one_thread(self):
         for city in self.cities:
-            result = self.start_requests(city)
-            print(f"获取{city.get('province_name')}-{city.get('name')}三级区县结束: length={len(result)}")
+            self.start_requests(city)
+            print(f"获取 {city.get('province_name')}-{city.get('name')} 三级区县结束")

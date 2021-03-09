@@ -76,10 +76,13 @@ class VillageSpider(object):
     def multi_thread(self):
         with ThreadPoolExecutor(max_workers=self.thread_num) as t:  # 创建一个最大容纳数量为6的线程池
             for result in t.map(self.start_requests, self.towns):
-                village = result[0]
-                print(f"获取{village.get('province_name')}-{village.get('city_name')}-{village.get('county_name')}-{village.get('name')}五级村居委会线程结束: length={len(result)}")
+                if result:
+                    village = result[0]
+                    print(f"获取 {village.get('province_name')}-{village.get('city_name')}-{village.get('county_name')}-{village.get('name')} 五级村居委会线程结束")
+                else:
+                    print(f"获取五级村居委会线程结束")
 
     def one_thread(self):
         for town in self.towns:
-            result = self.start_requests(town)
-            print(f"获取{town.get('province_name')}-{town.get('city_name')}-{town.get('county_name')}-{town.get('name')}下的五级村居委会结束: length={len(result)}")
+            self.start_requests(town)
+            print(f"获取 {town.get('province_name')}-{town.get('city_name')}-{town.get('county_name')}-{town.get('name')} 下的五级村居委会结束")

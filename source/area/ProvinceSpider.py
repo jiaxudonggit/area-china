@@ -87,6 +87,10 @@ class ProvinceSpider(object):
         # 获取二级地级市
         city_tool = CitySpider(encoding=self.encoding, headers=self.headers, provinces=provinces, excel_tool=self.excel_tool,
                                is_multi_thread=self.is_multi_thread, thread_num=self.thread_num, sleep=self.sleep)
-        city_tool.multi_thread()
+
+        if self.is_multi_thread:
+            city_tool.multi_thread()
+        else:
+            city_tool.one_thread()
 
         return provinces

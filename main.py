@@ -68,7 +68,7 @@ class Main(object):
         # 获取5级政区域数据
         province_tool = ProvinceSpider(
             province_code=self.province_code, domain_url=self.domain_url, encoding=self.encoding, headers=self.headers,
-            sleep=0.5, excel_tool=self.excel_tool, is_multi_thread=False
+            sleep=3, excel_tool=self.excel_tool, is_multi_thread=True, thread_num=3
         )
         province_tool.start_requests()
 
@@ -78,6 +78,6 @@ class Main(object):
 
 if __name__ == '__main__':
     file_name = "行政村统计数据.xlsx"
-    province_code_list = ["15"]
+    province_code_list = ["15", ]
     main = Main(province_code=province_code_list, file_name=file_name, year="2020")
     main.run()

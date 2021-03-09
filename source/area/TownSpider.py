@@ -77,20 +77,20 @@ class TownSpider(object):
         # 获取五级村居委会
         town_tool = VillageSpider(encoding=self.encoding, headers=self.headers, towns=towns, excel_tool=self.excel_tool,
                                   thread_num=self.thread_num, sleep=self.sleep)
-        if self.is_multi_thread:
-            town_tool.multi_thread()
-        else:
-            town_tool.one_thread()
+        town_tool.one_thread()
 
         return towns
 
     def multi_thread(self):
         with ThreadPoolExecutor(max_workers=self.thread_num) as t:  # 创建一个最大容纳数量为6的线程池
             for result in t.map(self.start_requests, self.counties):
-                town = result[0]
-                print(f"获取{town.get('province_name')}-{town.get('city_name')}-{town.get('county_name')}三级区县线程结束: length={len(result)}")
+                if result:
+                    town = result[0]
+                    print(f"获取 {town.get('province_name')}-{town.get('city_name')}-{town.get('county_name')} 四级乡镇线程结束")
+                else:
+                    print(f"获取四级乡镇线程结束")
 
     def one_thread(self):
         for county in self.counties:
-            result = self.start_requests(county)
-            print(f"获取{county.get('province_name')}-{county.get('city_name')}-{county.get('name')}三级区县线程结束: length={len(result)}")
+            self.start_requests(county)
+            print(f"获取 {county.get('province_name')}-{county.get('city_name')}-{county.get('name')} 四级乡镇结束")
