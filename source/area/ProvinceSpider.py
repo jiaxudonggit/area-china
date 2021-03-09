@@ -17,13 +17,13 @@ from source.area.util import RequestUtil
 
 class ProvinceSpider(object):
 
-    def __init__(self, domain_url: str, encoding: str, headers: list, province_code: list = None, excel_tool: WriteExcel = None,
+    def __init__(self, domain_url: str, encoding: str, headers: list, province_code_list: list = None, excel_tool: WriteExcel = None,
                  is_multi_thread: bool = False, thread_num: int = 3, sleep: float = 1):
         """
         :param domain_url: 爬取页面链接
         :param encoding: 编码
         :param headers: 请求头列表
-        :param province_code: 统计代码
+        :param province_code_list: 统计代码
         :param excel_tool: excel工具类对象
         :param is_multi_thread: 是否开启多线程
         :param thread_num: 多线程数
@@ -32,7 +32,7 @@ class ProvinceSpider(object):
         self.domain_url = domain_url
         self.encoding = encoding
         self.headers = headers
-        self.province_code = province_code
+        self.province_code_list = province_code_list
         self.excel_tool = excel_tool
         self.is_multi_thread = is_multi_thread
         self.thread_num = thread_num
@@ -66,8 +66,8 @@ class ProvinceSpider(object):
                 a_tag.make_links_absolute()
                 code = a_tag.attr('href').split('/')[-1].split('.')[0]
 
-                if self.province_code:
-                    if str(code) in [str(code) for code in self.province_code]:
+                if self.province_code_list:
+                    if str(code) in [str(code) for code in self.province_code_list]:
                         provinces.append({
                             'code': code,  # 统计汇总识别码-划分代码
                             'name': a_tag.text(),  # 省份名称

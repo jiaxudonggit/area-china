@@ -13,13 +13,25 @@
 * 本项目仅做学习交流用途
 
 # 运行程序
+
 * 依赖Python3环境
 * 环境安装好后，建议直接导入项目到PyCharm中运行
 * 推荐使用单线程爬取，虽然速度慢，但是不容易被反爬
-* 运行：
-  ```
-    province_code = ['15',] # 可爬取指定的一级行政区数据, 为空时爬取全国一级行政区, 否则爬取指定代码的一级行政区
-    file_name = "行政村统计数据.xlsx"
-    main = Main(province_code=province_code_list, file_name=file_name, year="2020")
-    main.run()
+* 运行项目根目录下main.py文件
+* Mian类参数说明：
+
+```python
+"""
+year: 要爬取的年份，默认2020
+encoding: 编码，默认gb2312
+province_code_list: 可爬取指定的一级行政区数据，为空时爬取全国一级行政区，否则爬取指定代码的一级行政区
+is_multi_thread: 是否开启多线程爬取，推荐使用单线程爬取，虽然速度慢，但是不容易被反爬
+thread_num: 线程数量，越小越不容易被反爬
+sleep: 睡眠间隔时间，越大越不容易被反爬 单线程是推荐0.5-1之间
+file_name: excel文件名，默认存储在项目根目录下的result文件夹内，使用时间做区分
+"""
+file_name = "行政村统计数据.xlsx"
+province_code_list = ["15", ]
+main = Main(province_code_list=province_code_list, file_name=file_name, year="2020", sleep=0.5)
+main.run()
 ```
