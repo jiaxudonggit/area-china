@@ -1,4 +1,4 @@
 openpyxl==3.0.5
 pyquery==1.4.3
-requests==2.23.0
+requests==2.28.0
 PyExecJS==1.5.1
