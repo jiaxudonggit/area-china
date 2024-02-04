@@ -12,7 +12,7 @@ class Main(object):
     def __init__(self, province_code_list: list = None, year: str = '2020', encoding: str = 'gb2312', file_name: str = "",
                  sleep: float = 1, is_multi_thread: bool = False, thread_num: int = 3):
         """
-        :param province_code: 统计汇总识别码-划分代码 为空时爬取全国一级：省、直辖市、自治区
+        :param province_code_list: 统计汇总识别码-划分代码 为空时爬取全国一级：省、直辖市、自治区
         :param year: 更改年份只需要更改这里即可
         :param encoding: 编码
         :param file_name: excel文件名
@@ -52,7 +52,8 @@ class Main(object):
             },
         ]
 
-        self.domain_url = f'http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/{year}/index.html'
+        # 2024-02-04 地址由 http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/{year}/index.html 变更为 https://www.stats.gov.cn/sj/tjbz/tjyqhdmhcxhfdm/{year}/index.html
+        self.domain_url = f'https://www.stats.gov.cn/sj/tjbz/tjyqhdmhcxhfdm/{year}/index.html'
         self.province_code_list = province_code_list
         self.year = year
         self.encoding = encoding
@@ -92,6 +93,6 @@ if __name__ == '__main__':
     file_name: excel文件名，默认存储在项目根目录下的result文件夹内，使用时间做区分
     """
     file_name = "行政统计数据.xlsx"
-    province_code_list = []
-    main = Main(province_code_list=province_code_list, file_name=file_name, year="2020", sleep=3, is_multi_thread=True, thread_num=8)
+    _province_code_list = []
+    main = Main(province_code_list=_province_code_list, file_name=file_name, year="2023", sleep=1, is_multi_thread=True, thread_num=8, encoding='utf-8')
     main.run()
