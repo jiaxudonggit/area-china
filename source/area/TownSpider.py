@@ -21,7 +21,7 @@ class TownSpider(object):
         """
         :param encoding: 编码
         :param headers: 请求头列表
-        :param cities: 三级市辖区、县（旗）、县级市、自治县（自治旗）、特区、林区字典
+        :param counties: 三级市辖区、县（旗）、县级市、自治县（自治旗）、特区、林区字典
         :param excel_tool: excel工具类对象
         :param is_multi_thread: 是否开启多线程
         :param thread_num: 多线程数

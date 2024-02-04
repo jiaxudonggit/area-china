@@ -69,7 +69,7 @@ class ProvinceSpider(object):
                     code = a_tag.attr('href').split('/')[-1].split('.')[0]
 
                     if self.province_code_list:
-                        if str(code) in [str(code) for code in self.province_code_list]:
+                        if str(code) in [str(_code) for _code in self.province_code_list]:
                             provinces.append({
                                 'code': code,  # 统计汇总识别码-划分代码
                                 'name': a_tag.text(),  # 省份名称

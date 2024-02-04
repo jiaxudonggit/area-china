@@ -27,8 +27,7 @@ class Main(object):
                 'Cache-Control': 'max-age=0',
                 'Connection': 'keep-alive',
                 'Host': 'www.stats.gov.cn',
-                'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 '
-                              'Safari/537.36'
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/118.0'
             },
             {
                 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
@@ -37,8 +36,7 @@ class Main(object):
                 'Cache-Control': 'max-age=0',
                 'Connection': 'keep-alive',
                 'Host': 'www.stats.gov.cn',
-                'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 '
-                              'Safari/537.36'
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36'
             },
             {
                 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
@@ -47,8 +45,7 @@ class Main(object):
                 'Cache-Control': 'max-age=0',
                 'Connection': 'keep-alive',
                 'Host': 'www.stats.gov.cn',
-                'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 '
-                              'Safari/537.36'
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36'
             },
         ]
 
@@ -92,7 +89,7 @@ if __name__ == '__main__':
     sleep: 睡眠间隔时间，越大越不容易被反爬 单线程是推荐0.5-1之间
     file_name: excel文件名，默认存储在项目根目录下的result文件夹内，使用时间做区分
     """
-    file_name = "行政统计数据.xlsx"
+    _file_name = "行政统计数据.xlsx"
     _province_code_list = []
-    main = Main(province_code_list=_province_code_list, file_name=file_name, year="2023", sleep=1, is_multi_thread=True, thread_num=8, encoding='utf-8')
+    main = Main(province_code_list=_province_code_list, file_name=_file_name, year="2023", sleep=3, is_multi_thread=True, thread_num=4, encoding='utf-8')
     main.run()
